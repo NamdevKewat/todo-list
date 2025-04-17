@@ -1,33 +1,48 @@
 import React from "react";
+import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';//for ids  and keys
 
-const list = () => {
-
-    let add = ()=>{
-        let inp = document.getElementById("inp");
-        let ul = document.getElementById("ul");
-        let string1 = inp.value === '' ? '' : inp.value;
-       const checkbox =  document.createElement("input");
-       checkbox.type = 'checkbox';
-    //    ul.appendChild(checkbox);
-    //    ul.appendChild(list);
-    const listItem = document.createElement("li");
-    listItem.innerHTML = string1;
-
-    listItem.prepend(checkbox); // add checkbox inside the li
-    ul.appendChild(listItem);
-    ul.appendChild(string1);
+export default function list(){
+    let [todos, setTodos] = useState([{task:"",id: uuidv4()}]);//array of todos
+    let [ newTodo, setNewTodo] = useState(""); //for adding tasks
+    
+    let addNewTask = () =>{
+        setTodos([...todos,{task : newTodo , id :uuidv4()}]);//function that add tasks
+        setNewTodo(""); // to empty the input bar 
     }
+
+    let updateTodoValue = (event) => {
+        let a = setNewTodo(event.target.value);
+        console.log(a);
+    }
+
+    let deletetodo = (id) =>{
+        console.log(id);
+        setTodos(todos.filter((todo)=> todo.id != id ));
+    }
+
     return (
         <div>
-            <input type="text" id="inp"></input>
-            <button onClick={add}>Add</button>
-            <div>
-                <ul id="ul">
+            <input placeholder="Add a task" onChange={updateTodoValue} value={newTodo}></input>
+            &nbsp;
+            <button onClick={addNewTask} >Add task</button>
+            <br></br>
+            <br></br>
+            <br></br>
 
-                </ul>
-            </div>
+            <h4>Task Todo</h4>
+            <ul class="list-group">
+                {
+                    todos.map((todo)=>(
+                        <li class="list-group-item" key={todo.id}>
+                             <input type="checkbox" id={todo.id}></input>
+                            <label ><span>{todo.task}</span></label>
+                            &nbsp;
+                             <button onClick={()=>deletetodo(todo.id)}>Delete</button>
+                         </li>
+                    ))
+                }
+            </ul>
         </div>
-    )
+    );    
 }
-
-export default list;
